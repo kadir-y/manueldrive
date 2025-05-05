@@ -11,7 +11,7 @@ pip install flask flask_cors
 ### Run
 
 ```python
-source ~/mycamenv/bin/activate
+source ~/myenv/bin/activate
 cd manueldrive
 python app.py
 ```
