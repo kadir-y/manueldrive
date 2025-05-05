@@ -5,7 +5,7 @@
 ```python
 python3 -m venv ~/myenv
 source ~/myenv/bin/activate
-pip install flask flask_cors
+pip install flask flask_cors opencv-python
 ```
 
 ### Run
