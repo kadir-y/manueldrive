@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IKA Manuel Control UI</title>
+    <link rel="shortcut icon" href="static/favicon.ico" type="image/x-icon">
+    <link rel="stylesheet" href="static/bootstrap.min.css">
+    <link rel="stylesheet" href="static/style.css">
+</head>
+
+<body>
+    <div class="_container">
+        <div class="welcome-page" hidden>
+            <h2>Hi!</h2>
+            <h5>Welcome to the IKA Manuel Control UI.</h5>
+            <div class="selection stream-select">
+                <div class="option">1</div>
+                <div class="option">2</div>
+                <div class="option">3</div>
+            </div>
+            <p>To get started, please select a camera from your keyboard.</p>
+        </div>
+        <div class="stream-page" hidden>
+            <div class="container-left">
+                <div class="stream-container">
+                    <div class="blur-background"></div>
+                    <img class="stream" src="" alt="live stre"am from vehicle camera 1">
+                    <div class="close-button">
+                        <div class="circle-gradient">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="56" height="56" fill="currentColor" class="bi bi-x-circle" viewBox="0 0 16 16">
+                                <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14m0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16"/>
+                                <path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708"/>
+                            </svg>
+                        </div>
+                    </div>
+                    <div class="cover">
+                        <h1 class="id"></h1>
+                        <div class="type mb-2"></div>
+                        <button class="btn btn-primary">Reopen</button>
+                    </div>
+                </div>
+                <div class="stream-container">
+                    <div class="blur-background"></div>
+                    <img class="stream" src="" alt="live stream from vehicle camera 2">
+                    <div class="close-button">
+                        <div class="circle-gradient">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="56" height="56" fill="currentColor" class="bi bi-x-circle" viewBox="0 0 16 16">
+                                <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14m0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16"/>
+                                <path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708"/>
+                            </svg>
+                        </div>
+                    </div>
+                    <div class="cover">
+                        <h1 class="id"></h1>
+                        <div class="type mb-2"></div>
+                        <button class="btn btn-primary">Reopen</button>
+                    </div>
+                </div>
+            </div>
+            <div class="container-right">
+                <div class="stream-container">
+                    <div class="blur-background"></div>
+                    <img class="stream" src="" alt="live stream from vehicle camera 3">
+                    <div class="cursor" id="cursor"></div>
+                    <div class="close-button">
+                        <div class="circle-gradient">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="96" height="96" fill="currentColor" class="bi bi-x-circle" viewBox="0 0 16 16">
+                                <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14m0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16"/>
+                                <path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708"/>
+                            </svg>
+                        </div>
+                    </div>  
+                    <div class="cover">
+                        <h1 class="id"></h1>
+                        <div class="type mb-2"></div>
+                        <button class="btn btn-primary">Reopen</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="static/script.js"></script>
+</body>
+</html>
