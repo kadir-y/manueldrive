@@ -12,5 +12,6 @@ pip install flask flask_cors
 
 ```python
 source ~/mycamenv/bin/activate
-python camera_stream.py
+cd manueldrive
+python app.py
 ```
