@@ -107,14 +107,14 @@ html, body {
     border-radius: 50%;
     aspect-ratio: 1;
     position: absolute;
-    display: none;
     background-color: red;
     top: 50%;
     left: 50%;
     transform: translateX(-50%) translateY(-50%);
+    visibility: hidden;
 }
 .cursor.show {
-    display: block;
+    visibility: visible;
 }
 .close-button {
     display: flex;

@@ -1,37 +1,3 @@
-/* routes elements and vars */
-const welcome_page = document.querySelector('.welcome-page');
-const stream_page = document.querySelector('.stream-page');
-let pre_hash = window.location.hash;
-/* routes elements and vars end */
-
-/* stream elements*/
-const stream_containers = document.querySelectorAll('.stream-container')
-const big_panel = stream_containers[2];
-const stream_imgs = document.querySelectorAll('.stream');
-const big_img = stream_imgs[2]; 
-const stream_select = document.querySelectorAll('.stream-select .option');
-const close_buttons = document.querySelectorAll('.close-button svg');
-const reopen_buttons = document.querySelectorAll('.cover button');
-const cover_stream_ids = document.querySelectorAll('.cover .id')
-const cover_stream_types = document.querySelectorAll('.cover .type')
-document.stream_0 = null;
-document.stream_1 = null;
-document.stream_2 = null;
-/* stream elements end*/
-
-/* cursor elements*/
-const cursor = document.querySelector('.cursor');
-let cursorLoc = [];
-/* cursor elements end*/
-
-/* stream config */
-const fps_list = [5, 20, 12];
-const stream_queue = [ 0, 1, 2 ];
-let active_streams = []
-const stream_link = 'http://127.0.0.1:5000/live-stream-base64';
-let source;
-/* stream config end */
-
 /* Lib begin*/
 function _time(type) {
     const date = new Date();
@@ -41,15 +7,12 @@ function _time(type) {
     const hours = String(date.getHours()).padStart(2, '0');
     const minutes = String(date.getMinutes()).padStart(2, '0');
     const seconds = String(date.getSeconds()).padStart(2, '0');
-
     if (type === 'date') {
     return `${year}-${month}-${day}`;
     }
-
     if (type === 'time') {
     return `${hours}:${minutes}:${seconds}`;
     }
-
     if (type === 'detailed') {
     return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
     }
@@ -74,6 +37,41 @@ const getData = (key) => JSON.parse(localStorage.getItem(key))
 function setData(key, value) { localStorage.setItem(key, JSON.stringify(value)); }
 /* Lib end */
 
+/* routes elements and vars */
+const welcome_page = document.querySelector('.welcome-page');
+const stream_page = document.querySelector('.stream-page');
+let pre_hash = window.location.hash;
+/* routes elements and vars end */
+
+/* stream elements*/
+const stream_containers = document.querySelectorAll('.stream-container')
+const big_panel = stream_containers[2];
+const stream_imgs = document.querySelectorAll('.stream');
+const big_img = stream_imgs[2]; 
+const stream_select = document.querySelectorAll('.stream-select .option');
+const close_buttons = document.querySelectorAll('.close-button svg');
+const reopen_buttons = document.querySelectorAll('.cover button');
+const cover_stream_ids = document.querySelectorAll('.cover .id')
+const cover_stream_types = document.querySelectorAll('.cover .type')
+let big_img_ratio = 0;
+document.stream_0 = null;
+document.stream_1 = null;
+document.stream_2 = null;
+/* stream elements end*/
+
+/* cursor elements*/
+const cursor = document.querySelector('.cursor');
+let cursorLoc = getData('cursorLoc');
+/* cursor elements end*/
+
+/* stream config */
+const fps_list = [5, 20, 12];
+const stream_queue = [ 0, 1, 2 ];
+let active_streams = []
+const stream_link = '/live-stream-base64';
+let source;
+/* stream config end */
+
 /* Router begin */
 function viewPage(hash) {
     if (hash === '#stream') {
@@ -91,7 +89,7 @@ function redirectToPage(hash) {
     }
     if (pre_hash === '#stream') {
         UnMountStreamPage();
-    } else if (pre_hash === '#welcome') {
+    } else {
         UnMountWelcomePage();
     }
     pre_hash = hash;
@@ -120,6 +118,18 @@ function UnMountWelcomePage() {
 /* Router end */
 
 /* Stream functions */
+function updateImageDimensions(base64Image) {
+    // Yeni bir Image objesi oluşturun
+    let img = new Image();
+    // Base64 verisini resme yükleyin
+    img.src = base64Image;
+    // Resim yüklendiğinde boyutları alalım
+    img.onload = function() {
+        let width = img.width;
+        let height = img.height;
+        big_img_ratio = width / height;
+    };
+}
 function open_stream(list) {
     list = Array.isArray(list) ? list : [list];
     list.forEach((id, index) => {
@@ -131,6 +141,9 @@ function open_stream(list) {
             document[varname] = new EventSource(`${stream_link}/0/${fps_list[id]}`);
             document[varname].onmessage = function(event) {
                 stream_imgs[stream_queue[id]].src = event.data;
+                if (id === 2) {
+                    updateImageDimensions(event.data);
+                }
             }
             active_streams.push(id);
         }
@@ -186,23 +199,57 @@ function stream_sorter(id) {
 /* Stream functions */
 
 /* Cursor functions */
-function moveCursor ({ x, y }) {
+function moveCursor ({ x, y }, prevent) {
     if (x) {
         cursor.style.left = x + 'px';
     }
     if (y) {
         cursor.style.top = y + 'px';
     }
+    if (!prevent)
+    cursorLoc = getCursorLoc();
 }
-function updateCursorLoc(data) {
-    cursorLoc = data ? data : [
-        (cursor.offsetLeft - (big_panel.offsetWidth - big_img.clientWidth) / 2) / big_img.clientWidth,
-        (cursor.offsetTop - (big_panel.offsetHeight - big_img.clientHeight) / 2) / big_img.clientHeight
+function get_optimized_dimensions() {
+    let panel_width = big_panel.offsetWidth;
+    let panel_height = big_panel.offsetHeight;
+    // Resmin oranını hesapla (width / height)
+    let image_ratio = big_img_ratio;
+    console.log(panel_width, panel_height, big_img_ratio)
+    // Panelin oranını hesapla
+    let panel_ratio = panel_width / panel_height;
+    let new_width, new_height;
+    // Eğer resmin oranı panelin oranına uygunsa, sadece panelin boyutlarına sığdırma işlemi yapılır.
+    if (image_ratio > panel_ratio) {
+        // Resmin genişliği panelin genişliğine sığacak şekilde yeniden boyutlandır
+        new_width = panel_width;
+        new_height = Math.round(panel_width / image_ratio);
+    } else {
+        // Resmin yüksekliği panelin yüksekliğine sığacak şekilde yeniden boyutlandır
+        new_height = panel_height;
+        new_width = Math.round(panel_height * image_ratio);
+    }
+    // Eğer yeni hesaplanan boyutlar panelin boyutlarından fazla olursa, panel boyutlarını kullan
+    if (new_width > panel_width) {
+        new_width = panel_width;
+        new_height = Math.round(panel_width / image_ratio);
+    }
+    if (new_height > panel_height) {
+        new_height = panel_height;
+        new_width = Math.round(panel_height * image_ratio);
+    }
+    return { img_width: new_width, img_height: new_height };
+}
+function getCursorLoc() {
+    const { img_width, img_height } = get_optimized_dimensions();
+    return [
+        (cursor.offsetLeft - (big_panel.offsetWidth - img_width) / 2) / img_width,
+        (cursor.offsetTop - (big_panel.offsetHeight - img_height) / 2) / img_height
     ];
 }
 function calcCursorLoc() {
-    const x = big_img.clientWidth * cursorLoc[0] + (big_panel.offsetWidth - big_img.clientWidth) / 2;
-    const y = big_img.clientHeight * cursorLoc[1] + (big_panel.offsetHeight - big_img.clientHeight) / 2;   
+    const { img_width, img_height } = get_optimized_dimensions();
+    const x = img_width * cursorLoc[0] + (big_panel.offsetWidth - img_width) / 2;
+    const y = img_height * cursorLoc[1] + (big_panel.offsetHeight - img_height) / 2;
     return { x, y }
 }
 /* Cursor functions end */
@@ -223,20 +270,16 @@ document.addEventListener('keydown', function(event) {
         stream_sorter(2);
     } else if (key === ' ') {
         cursor.classList.toggle('show');
+        moveCursor(calcCursorLoc(cursorLoc), true);
     } else if (!cursor.classList.contains('show')) {
     }  else if (event.key === "ArrowRight") {
         moveCursor({ x: cursor.offsetLeft + 1 });
-        updateCursorLoc();
     } else if (event.key === "ArrowLeft") {
         moveCursor({ x: cursor.offsetLeft - 1 });
-        updateCursorLoc();
-    }
-    else if (event.key === "ArrowUp") {
+    } else if (event.key === "ArrowUp") {
         moveCursor({ y: cursor.offsetTop - 1 });
-        updateCursorLoc();
     } else if (event.key === "ArrowDown") {
         moveCursor({ y: cursor.offsetTop + 1 });
-        updateCursorLoc();
     }
 });
 /* Keyboard events end */
@@ -265,18 +308,16 @@ reopen_buttons.forEach((button, index) => {
 document.addEventListener('DOMContentLoaded', function() {
     const hash = window.location.hash;
     viewPage(hash);
-    const localCursorLoc = getData('cursorLoc');
-    updateCursorLoc(localCursorLoc ? localCursorLoc : false); 
-    moveCursor(calcCursorLoc());
 });
 
 window.addEventListener('resize', () => {
-    moveCursor(calcCursorLoc());
+    moveCursor(calcCursorLoc(cursorLoc), true);
 })
 
 /* For this error => ""The connection to was interrupted while
 the page was loading."" */
 window.addEventListener('beforeunload', function(event) {
     close_stream(active_streams);
+    setData('cursorLoc', cursorLoc);
 });
 /* */

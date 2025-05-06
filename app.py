@@ -1,7 +1,6 @@
 from flask import Flask, Response, render_template
 from flask_cors import CORS
 import time
-import json
 import base64
 import cv2
 import threading
